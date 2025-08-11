@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BLACK SHADOW</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: #f0f0f0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* হেডার ডিজাইন */
+  header {
+    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    border-radius: 0 0 20px 20px;
+    user-select: none;
+    font-weight: 700;
+    color: #ffd700;
+    letter-spacing: 2px;
+    font-size: 1.3rem;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  #header-left {
+    font-size: 1.4rem;
+    letter-spacing: 3px;
+    text-shadow: 0 0 8px #ffd700aa, 0 0 15px #ffcc0077;
+  }
+
+  #menu-btn {
+    font-size: 1.8rem;
+    background: transparent;
+    border: none;
+    color: #ffd700;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 10px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    box-shadow: 0 0 8px #ffd700aa;
+    margin-left: auto;
+  }
+  #menu-btn:hover {
+    background-color: #ffd70022;
+    color: #fff;
+  }
+
+  /* ড্রয়ার */
+
+  #drawer {
+    position: fixed;
+    top: 0; right: -250px;
+    width: 250px;
+    height: 100vh;
+    background: rgba(15,15,70,0.95);
+    box-shadow: -4px 0 25px rgba(0,0,0,0.8);
+    backdrop-filter: blur(12px);
+    transition: right 0.3s ease;
+    padding: 60px 25px 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    z-index: 1050;
+  }
+  #drawer.open {
+    right: 0;
+  }
+
+  /* ক্রস বাটন */
+  .close-drawer-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 2.5rem;
+    background: transparent;
+    border: none;
+    color: #ffd700;
+    cursor: pointer;
+    font-weight: 900;
+    line-height: 1;
+    padding: 0;
+    user-select: none;
+    transition: color 0.3s ease;
+  }
+  .close-drawer-btn:hover {
+    color: #fff;
+  }
+
+  #drawer button {
+    background: #ffd700;
+    color: #222;
+    border: none;
+    padding: 14px 25px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 1.15rem;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(255,215,0,0.8);
+    transition: background 0.3s ease;
+  }
+  #drawer button:hover {
+    background: #fff;
+  }
+
+  /* পোস্ট লিস্ট */
+  #post-list {
+    padding: 50px 20px;
+    max-width: 1000px;
+    margin: 0 auto 100px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(320px,1fr));
+    gap: 30px;
+    position: relative;
+  }
+  .post-card {
+    background: rgba(20,20,90,0.85);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.7);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+  }
+  .post-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 14px 40px rgba(255,215,0,0.8);
+  }
+  .post-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    filter: brightness(0.85);
+    transition: filter 0.3s ease;
+  }
+  .post-card:hover img {
+    filter: brightness(1);
+  }
+  .post-card-content {
+    padding: 20px 25px 25px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .post-card-content h4 {
+    color: #ffd700;
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  .post-card-content p {
+    color: #ddd;
+    flex-grow: 1;
+    font-size: 1.05rem;
+    line-height: 1.5;
+  }
+  .post-meta {
+    margin-top: 12px;
+    display: flex;
+    gap: 25px;
+    color: #ffd700;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .post-meta span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .post-meta i {
+    font-size: 1.1rem;
+  }
+
+  .share-link-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255,215,0,0.9);
+    border: none;
+    color: #222;
+    padding: 8px 14px;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(255,215,0,0.7);
+    transition: background 0.3s ease;
+  }
+  .share-link-btn:hover {
+    background: #fff;
+  }
+
+  .delete-post-btn {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background:#ff4c4c;
+    border:none;
+    border-radius:25px;
+    padding:8px 12px;
+    color:#fff;
+    font-weight:700;
+    cursor:pointer;
+    box-shadow:0 3px 10px #ff4c4ccc;
+    transition: background 0.3s;
+  }
+  .delete-post-btn:hover {
+    background:#ff1c1c;
+  }
+
+  /* লগইন পপআপ */
+  #login-popup {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1200;
+  }
+  #login-popup.active {
+    display: flex;
+  }
+  #login-popup .login-box {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 20px;
+    width: 350px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.35);
+    color: #222;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: relative;
+  }
+  #login-popup .login-box h2 {
+    margin-bottom: 10px;
+    font-weight: 700;
+    text-align: center;
+    color: #333;
+  }
+  #login-popup input[type="password"] {
+    padding: 14px;
+    font-size: 1rem;
+    border-radius: 12px;
+    border: 1.5px solid #ccc;
+  }
+  #login-popup button {
+    background: #667eea;
+    border: none;
+    color: white;
+    padding: 14px;
+    font-weight: 700;
+    font-size: 1.15rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  #login-popup button:hover {
+    background: #5468c7;
+  }
+  #login-popup .error-msg {
+    color: red;
+    font-size: 1rem;
+    text-align: center;
+  }
+  #login-popup .close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: #555;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  #login-popup .close-btn:hover {
+    color: #222;
+  }
+
+  /* পোস্ট এডিটর */
+  #post-editor {
+    max-width: 700px;
+    margin: 40px auto 100px;
+    background: rgba(20,20,90,0.95);
+    padding: 35px 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(255,215,0,0.6);
+    display: none;
+    flex-direction: column;
+    gap: 20px;
+    color: #ffd700;
+  }
+  #post-editor.active {
+    display: flex;
+  }
+  #post-editor label {
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+  #post-editor input[type="text"],
+  #post-editor input[type="url"],
+  #post-editor input[type="number"],
+  #post-editor textarea {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    font-size: 1.05rem;
+    resize: vertical;
+    font-weight: 600;
+  }
+  #post-editor textarea {
+    min-height: 110px;
+  }
+  #post-editor button {
+    align-self: flex-start;
+    background: #ffd700;
+    color: #222;
+    border: none;
+    padding: 14px 30px;
+    border-radius: 40px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(255,215,0,0.8);
+    transition: background 0.3s ease;
+  }
+  #post-editor button:hover {
+    background: #fff;
+  }
+
+  /* ফুটার */
+  footer {
+    background: rgba(10,10,50,0.85);
+    padding: 20px 30px;
+    text-align: center;
+    color: #ffd700;
+    font-weight: 600;
+    box-shadow: 0 -2px 12px rgba(0,0,0,0.6);
+  }
+
+  @media(max-width:768px){
+    #post-list {
+      grid-template-columns: 1fr;
+      padding: 20px 10px 80px;
+    }
+    #post-editor {
+      margin: 30px 15px 80px;
+      padding: 25px 20px;
+    }
+    header {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      text-align: center;
+      height: auto;
+      padding: 20px 20px;
+    }
+    #header-left {
+      flex-basis: 100%;
+      font-size: 1.15rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div id="header-left">BLACK SHADOW</div>
+  <button id="menu-btn" aria-label="Menu"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+</header>
+
+<div id="drawer" aria-hidden="true">
+  <button id="close-drawer-btn" aria-label="Close Menu" title="Close Menu" class="close-drawer-btn">&times;</button>
+  <button id="admin-btn">Admin</button>
+  <button id="contact-btn">Contact</button>
+</div>
+
+<div id="post-list" aria-live="polite" aria-label="Blog Posts"></div>
+
+<div id="login-popup" role="dialog" aria-modal="true" aria-labelledby="login-title">
+  <div class="login-box">
+    <button class="close-btn" aria-label="Close Login">&times;</button>
+    <h2 id="login-title">Admin Login</h2>
+    <input type="password" id="password-input" placeholder="Password" aria-label="Password" />
+    <button id="login-submit-btn">Login</button>
+    <p class="error-msg" id="login-error"></p>
+  </div>
+</div>
+
+<section id="post-editor" aria-label="Add new post">
+  <label for="post-title">Post Title:</label>
+  <input type="text" id="post-title" placeholder="Enter post title" aria-required="true" />
+
+  <label for="post-desc">Post Description:</label>
+  <textarea id="post-desc" placeholder="Enter post description" aria-required="true"></textarea>
+
+  <label for="post-img-url">Image URL:</label>
+  <input type="url" id="post-img-url" placeholder="Enter image URL" aria-required="true" />
+
+  <label for="post-link">Post Link (URL):</label>
+  <input type="url" id="post-link" placeholder="Enter related link" />
+
+  <label for="post-likes">Likes:</label>
+  <input type="number" id="post-likes" min="0" value="0" />
+
+  <label for="post-comments">Comments:</label>
+  <input type="number" id="post-comments" min="0" value="0" />
+
+  <label for="post-shares">Shares:</label>
+  <input type="number" id="post-shares" min="0" value="0" />
+
+  <button id="add-post-btn">Add Post</button>
+</section>
+
+<footer>
+  <p>© ২০২৫ আমার ব্লগ | Designed with ❤️ by তোমার নাম</p>
+</footer>
+
+<script>
+  const menuBtn = document.getElementById('menu-btn');
+  const drawer = document.getElementById('drawer');
+  const closeDrawerBtn = document.getElementById('close-drawer-btn');
+  const contactBtn = document.getElementById('contact-btn');
+  const adminBtn = document.getElementById('admin-btn');
+  const loginPopup = document.getElementById('login-popup');
+  const loginSubmitBtn = document.getElementById('login-submit-btn');
+  const passwordInput = document.getElementById('password-input');
+  const loginError = document.getElementById('login-error');
+  const loginCloseBtn = loginPopup.querySelector('.close-btn');
+  const postEditor = document.getElementById('post-editor');
+  const addPostBtn = document.getElementById('add-post-btn');
+  const postTitleInput = document.getElementById('post-title');
+  const postDescInput = document.getElementById('post-desc');
+  const postImgInput = document.getElementById('post-img-url');
+  const postLinkInput = document.getElementById('post-link');
+  const postLikesInput = document.getElementById('post-likes');
+  const postCommentsInput = document.getElementById('post-comments');
+  const postSharesInput = document.getElementById('post-shares');
+  const postListDiv = document.getElementById('post-list');
+
+  let posts = JSON.parse(localStorage.getItem('posts')) || [
+    {
+      id: "post1",
+      title: "ওয়েব ডেভেলপমেন্টের বেসিক",
+      description: "আজকের দিনে ওয়েব ডেভেলপমেন্ট কীভাবে শুরু করবেন, সেই নিয়ে বিস্তারিত আলোচনা।",
+      img: "https://images.unsplash.com/photo-1522199710521-72d69614c702?auto=format&fit=crop&w=800&q=80",
+      link: "https://example.com/webdev-basics",
+      likes: 10,
+      comments: 12,
+      shares: 5,
+    },
+    {
+      id: "post2",
+      title: "সুন্দর ডিজাইনের গাইডলাইন",
+      description: "একজন ডিজাইনারের জন্য সুন্দর এবং কার্যকর ডিজাইনের মূলনীতি।",
+      img: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80",
+      link: "https://example.com/design-guidelines",
+      likes: 5,
+      comments: 8,
+      shares: 3,
+    },
+    {
+      id: "post3",
+      title: "জীবনের ছোট সুখ",
+      description: "প্রতিদিনের ছোট ছোট আনন্দের মুহূর্তগুলো উপভোগ করার গল্প।",
+      img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+      link: "",
+      likes: 18,
+      comments: 4,
+      shares: 9,
+    },
+  ];
+
+  let isLoggedIn = false;
+
+  // ড্রয়ার খোলা-বন্দের ইভেন্ট
+  menuBtn.addEventListener('click', () => {
+    drawer.classList.add('open');
+    drawer.setAttribute('aria-hidden', 'false');
+  });
+  closeDrawerBtn.addEventListener('click', () => {
+    drawer.classList.remove('open');
+    drawer.setAttribute('aria-hidden', 'true');
+  });
+
+  // কন্টাক্ট বাটনে আলার্ট (তোমার ইমেইল/নম্বর এখানে দিতে পারো)
+  contactBtn.addEventListener('click', () => {
+    alert('যোগাযোগ করুন: example@email.com\nফোন: +880 1234 567890');
+  });
+
+  // এডমিন বাটনে লগইন পপআপ দেখানো
+  adminBtn.addEventListener('click', () => {
+    drawer.classList.remove('open');
+    drawer.setAttribute('aria-hidden', 'true');
+    loginPopup.classList.add('active');
+    passwordInput.value = '';
+    loginError.textContent = '';
+    passwordInput.focus();
+  });
+
+  // লগইন পপআপ ক্লোজ
+  loginCloseBtn.addEventListener('click', () => {
+    loginPopup.classList.remove('active');
+  });
+
+  // লগইন সাবমিট হ্যান্ডলার
+  loginSubmitBtn.addEventListener('click', () => {
+    const pass = passwordInput.value.trim();
+    if(pass === 'ahad'){
+      isLoggedIn = true;
+      loginPopup.classList.remove('active');
+      postEditor.classList.add('active');
+      alert('সফলভাবে লগইন হয়েছে!');
+      renderPostList();
+    } else {
+      loginError.textContent = 'পাসওয়ার্ড ভুল হয়েছে!';
+    }
+  });
+
+  // পোস্ট এড ফাংশন
+  addPostBtn.addEventListener('click', () => {
+    if(!isLoggedIn){
+      alert('প্রথমে লগইন করুন।');
+      return;
+    }
+    const title = postTitleInput.value.trim();
+    const desc = postDescInput.value.trim();
+    const img = postImgInput.value.trim();
+    const link = postLinkInput.value.trim();
+    const likes = parseInt(postLikesInput.value) || 0;
+    const comments = parseInt(postCommentsInput.value) || 0;
+    const shares = parseInt(postSharesInput.value) || 0;
+
+    if(!title || !desc || !img){
+      alert('অনুগ্রহ করে শিরোনাম, বর্ণনা এবং ছবি URL দিন।');
+      return;
+    }
+
+    const newPost = {
+      id: "post" + (posts.length + 1) + Date.now(),
+      title,
+      description: desc,
+      img,
+      link,
+      likes,
+      comments,
+      shares,
+    };
+    posts.unshift(newPost);
+    localStorage.setItem('posts', JSON.stringify(posts));
+    renderPostList();
+
+    postTitleInput.value = '';
+    postDescInput.value = '';
+    postImgInput.value = '';
+    postLinkInput.value = '';
+    postLikesInput.value = 0;
+    postCommentsInput.value = 0;
+    postSharesInput.value = 0;
+
+    alert('পোস্ট সফলভাবে যুক্ত হয়েছে!');
+  });
+
+  // লিঙ্ক কপি ফাংশন
+  function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+      alert('লিঙ্ক কপি হয়েছে: ' + text);
+    }).catch(() => {
+      alert('কপি করতে ব্যর্থ, অনুগ্রহ করে ম্যানুয়ালি কপি করুন।');
+    });
+  }
+
+  // পোস্টগুলো রেন্ডার করা
+  function renderPostList() {
+    postListDiv.innerHTML = '';
+    if(posts.length === 0){
+      postListDiv.innerHTML = '<p style="text-align:center; color:#ffd700; font-size:1.2rem;">কোনো পোস্ট নেই।</p>';
+      return;
+    }
+    posts.forEach(post => {
+      const card = document.createElement('div');
+      card.className = 'post-card';
+
+      card.innerHTML = `
+        <img src="${post.img}" alt="${post.title}" />
+        <div class="post-card-content">
+          <h4>${post.title}</h4>
+          <p>${post.description}</p>
+          ${post.link ? `<p><a href="${post.link}" target="_blank" rel="noopener noreferrer" style="color:#ffd700; font-weight:600;">🔗 External Link</a></p>` : ''}
+          <div class="post-meta" aria-label="Post interactions">
+            <span title="Likes"><i class="fa-solid fa-thumbs-up"></i> ${post.likes}</span>
+            <span title="Comments"><i class="fa-solid fa-comment"></i> ${post.comments}</span>
+            <span title="Shares"><i class="fa-solid fa-share"></i> ${post.shares}</span>
+          </div>
+        </div>
+        <button class="share-link-btn" aria-label="Share Link"><i class="fa-solid fa-link"></i> লিঙ্ক</button>
+        ${isLoggedIn ? `<button class="delete-post-btn" aria-label="Delete Post" title="Delete Post">🗑️</button>` : ''}
+      `;
+
+      // শেয়ার লিংক বাটন ইভেন্ট
+      const shareBtn = card.querySelector('.share-link-btn');
+      shareBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const url = `${location.origin}${location.pathname}#${post.id}`;
+        copyToClipboard(url);
+      });
+
+      // ডিলেট বাটন ইভেন্ট (এডমিন হলে)
+      if(isLoggedIn){
+        const deleteBtn = card.querySelector('.delete-post-btn');
+        deleteBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if(confirm(`"${post.title}" পোস্টটি মুছে ফেলতে চান?`)){
+            posts = posts.filter(p => p.id !== post.id);
+            localStorage.setItem('posts', JSON.stringify(posts));
+            renderPostList();
+            alert('পোস্ট সফলভাবে মুছে ফেলা হয়েছে।');
+          }
+        });
+      }
+
+      postListDiv.appendChild(card);
+    });
+  }
+
+  // পেজ লোড হলে পোস্ট রেন্ডার এবং হ্যাশ চেক
+  window.addEventListener('load', () => {
+    renderPostList();
+
+    if(location.hash){
+      const postId = location.hash.substring(1);
+      const targetPost = posts.find(p => p.id === postId);
+      if(targetPost){
+        alert(`আপনি দেখছেন: "${targetPost.title}"`);
+      }
+    }
+  });
+
+</script>
+
+</body>
+</html>
